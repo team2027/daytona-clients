@@ -1,0 +1,19 @@
+cli/mcp/server.go
+  s_a704ad3550e855::t_58def053e74e0f 33,45-47,55,58-59,61,70-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "a07a800adb48867465d2670f246833ab2808f57e",
+  "prompts": {},
+  "sessions": {
+    "s_a704ad3550e855": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ce2ee3d5-0515-4545-bf8b-3850f3365c35",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Aleksey Bykhun <theisease@gmail.com>"
+    }
+  }
+}
