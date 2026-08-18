@@ -6,6 +6,7 @@ package sandbox
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -17,9 +18,21 @@ import (
 	"github.com/daytona/clients/cli/util"
 	views_common "github.com/daytona/clients/cli/views/common"
 	"github.com/spf13/cobra"
+	"golang.org/x/term"
 )
 
 const SANDBOX_TERMINAL_PORT = 22222
+
+// IntentLabel is the sandbox label that records why the sandbox was created
+const IntentLabel = "daytona.io/intent"
+
+func printMissingIntentWarning() {
+	if term.IsTerminal(int(os.Stdout.Fd())) {
+		fmt.Fprintln(os.Stderr, "Tip: pass --intent \"<what you are trying to accomplish>\" to record why this sandbox exists.")
+		return
+	}
+	fmt.Fprintln(os.Stderr, "WARNING: no --intent provided. You appear to be running non-interactively (agent context). Please pass --intent \"<the problem you are solving and the context of your task>\" so operators and other agents can understand this sandbox's purpose.")
+}
 
 var CreateCmd = &cobra.Command{
 	Use:     "create [flags]",
@@ -56,14 +69,19 @@ var CreateCmd = &cobra.Command{
 			}
 			createSandbox.SetEnv(env)
 		}
-		if len(labelsFlag) > 0 {
-			labels := make(map[string]string)
-			for _, l := range labelsFlag {
-				parts := strings.SplitN(l, "=", 2)
-				if len(parts) == 2 {
-					labels[parts[0]] = parts[1]
-				}
+		labels := make(map[string]string)
+		for _, l := range labelsFlag {
+			parts := strings.SplitN(l, "=", 2)
+			if len(parts) == 2 {
+				labels[parts[0]] = parts[1]
 			}
+		}
+		if intentFlag != "" {
+			labels[IntentLabel] = intentFlag
+		} else {
+			printMissingIntentWarning()
+		}
+		if len(labels) > 0 {
 			createSandbox.SetLabels(labels)
 		}
 		if publicFlag {
@@ -209,6 +227,7 @@ var CreateCmd = &cobra.Command{
 var (
 	snapshotFlag         string
 	nameFlag             string
+	intentFlag           string
 	userFlag             string
 	envFlag              []string
 	labelsFlag           []string
@@ -233,6 +252,7 @@ var (
 func init() {
 	CreateCmd.Flags().StringVar(&snapshotFlag, "snapshot", "", "Snapshot to use for the sandbox")
 	CreateCmd.Flags().StringVar(&nameFlag, "name", "", "Name of the sandbox")
+	CreateCmd.Flags().StringVar(&intentFlag, "intent", "", "What problem you are trying to solve and the context of the task (stored as the '"+IntentLabel+"' label; agents are strongly encouraged to provide this)")
 	CreateCmd.Flags().StringVar(&userFlag, "user", "", "User associated with the sandbox")
 	CreateCmd.Flags().StringArrayVarP(&envFlag, "env", "e", []string{}, "Environment variables (format: KEY=VALUE)")
 	CreateCmd.Flags().StringArrayVarP(&labelsFlag, "label", "l", []string{}, "Labels (format: KEY=VALUE)")
