@@ -1,0 +1,31 @@
+cli/cmd/sandbox/create.go
+  s_a704ad3550e855::t_8ab2dfc860f2db 59-65
+cli/mcp/server.go
+  s_a704ad3550e855::t_db60612fc19eba 9
+  s_a704ad3550e855::t_45896586edd782 59-60,63,65
+cli/internal/intent.go
+  s_a704ad3550e855::t_af078329699fc8 1-47
+cli/main.go
+  s_a704ad3550e855::t_7d4bfea60d0c2c 70
+  s_a704ad3550e855::t_f0c324429dd844 65
+cli/apiclient/api_client.go
+  s_a704ad3550e855::t_89f7eb96c4658f 150-153
+cli/mcp/tools/create_sandbox.go
+  s_a704ad3550e855::t_5ac35aa1a7f4ee 199
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "2450fb9f6ed77f7c0d92261214c10b49777d41de",
+  "prompts": {},
+  "sessions": {
+    "s_a704ad3550e855": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ce2ee3d5-0515-4545-bf8b-3850f3365c35",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Aleksey Bykhun <theisease@gmail.com>"
+    }
+  }
+}
