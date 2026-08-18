@@ -1,0 +1,22 @@
+cli/mcp/server.go
+  s_a704ad3550e855::t_5148528646c04b 7-8,14-17,44-70,72-113
+cli/mcp/tools/create_sandbox.go
+  s_a704ad3550e855::t_ce95cf78441760 202,204-210
+  s_a704ad3550e855::t_b57eadfc2c6124 19-21,23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "2b85068c3247416130a596d024e4c30cf700a348",
+  "prompts": {},
+  "sessions": {
+    "s_a704ad3550e855": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ce2ee3d5-0515-4545-bf8b-3850f3365c35",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Aleksey Bykhun <theisease@gmail.com>"
+    }
+  }
+}
