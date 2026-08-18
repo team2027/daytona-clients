@@ -57,7 +57,7 @@ func withIntent(tool mcp.Tool) mcp.Tool {
 func withIntentWarning(handler server.ToolHandlerFunc) server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		result, err := handler(ctx, request)
-		if err == nil && result != nil && !result.IsError && request.GetString("intent", "") == "" {
+		if result != nil && request.GetString("intent", "") == "" {
 			result.Content = append(result.Content, mcp.NewTextContent(missingIntentWarning))
 		}
 		return result, err

@@ -11,13 +11,11 @@ import (
 
 	apiclient "github.com/daytona/clients/api-client-go"
 	apiclient_cli "github.com/daytona/clients/cli/apiclient"
+	"github.com/daytona/clients/cli/cmd/common"
 	"github.com/mark3labs/mcp-go/mcp"
 
 	log "github.com/sirupsen/logrus"
 )
-
-// IntentLabel is the sandbox label that records why the sandbox was created
-const IntentLabel = "daytona.io/intent"
 
 type CreateSandboxArgs struct {
 	Intent              *string                    `json:"intent,omitempty"`
@@ -201,10 +199,12 @@ func createSandboxRequest(args CreateSandboxArgs) (*apiclient.CreateSandbox, err
 
 	labels := map[string]string{}
 	if args.Labels != nil {
-		labels = *args.Labels
+		for k, v := range *args.Labels {
+			labels[k] = v
+		}
 	}
 	if args.Intent != nil && *args.Intent != "" {
-		labels[IntentLabel] = *args.Intent
+		labels[common.IntentLabel] = *args.Intent
 	}
 	if len(labels) > 0 {
 		createSandbox.SetLabels(labels)

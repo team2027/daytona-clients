@@ -14,6 +14,9 @@ import (
 // IntentFlag holds the value of the global --intent flag
 var IntentFlag string
 
+// IntentLabel is the sandbox label that records why the sandbox was created
+const IntentLabel = "daytona.io/intent"
+
 // IntentFlagDescription is the help text for the global --intent flag
 const IntentFlagDescription = "What problem you are trying to solve and the context of the task. Agents are strongly encouraged to provide this on every call"
 
@@ -27,8 +30,13 @@ var intentExemptCommands = map[string]bool{
 // WarnIfMissingIntent prints a stderr warning when --intent was not provided,
 // louder when stdout is not a terminal (agent/non-interactive context)
 func WarnIfMissingIntent(cmd *cobra.Command) {
-	if IntentFlag != "" || intentExemptCommands[cmd.Name()] {
+	if IntentFlag != "" {
 		return
+	}
+	for c := cmd; c != nil; c = c.Parent() {
+		if intentExemptCommands[c.Name()] {
+			return
+		}
 	}
 	if term.IsTerminal(int(os.Stdout.Fd())) {
 		fmt.Fprintln(os.Stderr, "Tip: pass --intent \"<what you are trying to accomplish>\" to record why you are running this command.")

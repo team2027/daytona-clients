@@ -21,9 +21,6 @@ import (
 
 const SANDBOX_TERMINAL_PORT = 22222
 
-// IntentLabel is the sandbox label that records why the sandbox was created
-const IntentLabel = "daytona.io/intent"
-
 var CreateCmd = &cobra.Command{
 	Use:     "create [flags]",
 	Short:   "Create a new sandbox",
@@ -67,7 +64,7 @@ var CreateCmd = &cobra.Command{
 			}
 		}
 		if common.IntentFlag != "" {
-			labels[IntentLabel] = common.IntentFlag
+			labels[common.IntentLabel] = common.IntentFlag
 		}
 		if len(labels) > 0 {
 			createSandbox.SetLabels(labels)
