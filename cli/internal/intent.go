@@ -1,7 +1,7 @@
 // Copyright Daytona Platforms Inc.
 // SPDX-License-Identifier: AGPL-3.0
 
-package common
+package internal
 
 import (
 	"fmt"
@@ -11,11 +11,12 @@ import (
 	"golang.org/x/term"
 )
 
-// IntentFlag holds the value of the global --intent flag
-var IntentFlag string
+// Intent holds the value of the global --intent flag. It is sent as the
+// X-Daytona-Intent header on API requests so existing telemetry records it
+var Intent string
 
-// IntentLabel is the sandbox label that records why the sandbox was created
-const IntentLabel = "daytona.io/intent"
+// IntentHeader carries the intent to the API for telemetry
+const IntentHeader = "X-Daytona-Intent"
 
 // IntentFlagDescription is the help text for the global --intent flag
 const IntentFlagDescription = "What problem you are trying to solve and the context of the task. Agents are strongly encouraged to provide this on every call"
@@ -30,7 +31,7 @@ var intentExemptCommands = map[string]bool{
 // WarnIfMissingIntent prints a stderr warning when --intent was not provided,
 // louder when stdout is not a terminal (agent/non-interactive context)
 func WarnIfMissingIntent(cmd *cobra.Command) {
-	if IntentFlag != "" {
+	if Intent != "" {
 		return
 	}
 	for c := cmd; c != nil; c = c.Parent() {

@@ -11,14 +11,12 @@ import (
 
 	apiclient "github.com/daytona/clients/api-client-go"
 	apiclient_cli "github.com/daytona/clients/cli/apiclient"
-	"github.com/daytona/clients/cli/cmd/common"
 	"github.com/mark3labs/mcp-go/mcp"
 
 	log "github.com/sirupsen/logrus"
 )
 
 type CreateSandboxArgs struct {
-	Intent              *string                    `json:"intent,omitempty"`
 	Id                  *string                    `json:"id,omitempty"`
 	Name                *string                    `json:"name,omitempty"`
 	Target              *string                    `json:"target,omitempty"`
@@ -197,17 +195,8 @@ func createSandboxRequest(args CreateSandboxArgs) (*apiclient.CreateSandbox, err
 		createSandbox.SetEnv(*args.Env)
 	}
 
-	labels := map[string]string{}
 	if args.Labels != nil {
-		for k, v := range *args.Labels {
-			labels[k] = v
-		}
-	}
-	if args.Intent != nil && *args.Intent != "" {
-		labels[common.IntentLabel] = *args.Intent
-	}
-	if len(labels) > 0 {
-		createSandbox.SetLabels(labels)
+		createSandbox.SetLabels(*args.Labels)
 	}
 
 	if args.Public != nil {

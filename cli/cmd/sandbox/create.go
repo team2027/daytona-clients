@@ -56,17 +56,14 @@ var CreateCmd = &cobra.Command{
 			}
 			createSandbox.SetEnv(env)
 		}
-		labels := make(map[string]string)
-		for _, l := range labelsFlag {
-			parts := strings.SplitN(l, "=", 2)
-			if len(parts) == 2 {
-				labels[parts[0]] = parts[1]
+		if len(labelsFlag) > 0 {
+			labels := make(map[string]string)
+			for _, l := range labelsFlag {
+				parts := strings.SplitN(l, "=", 2)
+				if len(parts) == 2 {
+					labels[parts[0]] = parts[1]
+				}
 			}
-		}
-		if common.IntentFlag != "" {
-			labels[common.IntentLabel] = common.IntentFlag
-		}
-		if len(labels) > 0 {
 			createSandbox.SetLabels(labels)
 		}
 		if publicFlag {

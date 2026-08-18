@@ -6,6 +6,7 @@ package mcp
 import (
 	"context"
 
+	"github.com/daytona/clients/cli/internal"
 	"github.com/daytona/clients/cli/mcp/tools"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
@@ -55,11 +56,13 @@ func (s *DaytonaMCPServer) AddTool(tool mcp.Tool, handler server.ToolHandlerFunc
 	s.MCPServer.AddTool(tool, handler)
 }
 
-// intentWarningMiddleware appends a warning to results of calls made without an 'intent'
+// intentWarningMiddleware forwards the call's 'intent' to API request telemetry
+// and appends a warning to results of calls made without one
 func intentWarningMiddleware(next server.ToolHandlerFunc) server.ToolHandlerFunc {
 	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		internal.Intent = request.GetString("intent", "")
 		result, err := next(ctx, request)
-		if result != nil && request.GetString("intent", "") == "" {
+		if result != nil && internal.Intent == "" {
 			result.Content = append(result.Content, mcp.NewTextContent(missingIntentWarning))
 		}
 		return result, err
