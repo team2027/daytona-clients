@@ -16,7 +16,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// IntentLabel is the sandbox label that records why the sandbox was created
+const IntentLabel = "daytona.io/intent"
+
 type CreateSandboxArgs struct {
+	Intent              *string                    `json:"intent,omitempty"`
 	Id                  *string                    `json:"id,omitempty"`
 	Name                *string                    `json:"name,omitempty"`
 	Target              *string                    `json:"target,omitempty"`
@@ -195,8 +199,15 @@ func createSandboxRequest(args CreateSandboxArgs) (*apiclient.CreateSandbox, err
 		createSandbox.SetEnv(*args.Env)
 	}
 
+	labels := map[string]string{}
 	if args.Labels != nil {
-		createSandbox.SetLabels(*args.Labels)
+		labels = *args.Labels
+	}
+	if args.Intent != nil && *args.Intent != "" {
+		labels[IntentLabel] = *args.Intent
+	}
+	if len(labels) > 0 {
+		createSandbox.SetLabels(labels)
 	}
 
 	if args.Public != nil {
