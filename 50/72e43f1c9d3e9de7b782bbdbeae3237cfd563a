@@ -1,0 +1,24 @@
+cli/cmd/sandbox/create.go
+  s_a704ad3550e855::t_f226b6351e543f 9
+  s_a704ad3550e855::t_77236805c3e916 21
+  s_a704ad3550e855::t_abd22c77038ec5 255
+  s_a704ad3550e855::t_0a62d3bf978be3 230
+  s_a704ad3550e855::t_2add2e4b0a2def 72-76,78-84
+  s_a704ad3550e855::t_f133133f8cd3bb 26-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "5072e43f1c9d3e9de7b782bbdbeae3237cfd563a",
+  "prompts": {},
+  "sessions": {
+    "s_a704ad3550e855": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ce2ee3d5-0515-4545-bf8b-3850f3365c35",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Aleksey Bykhun <theisease@gmail.com>"
+    }
+  }
+}
