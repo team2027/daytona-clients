@@ -4,10 +4,17 @@
 package mcp
 
 import (
+	"context"
+
+	"github.com/daytona/clients/cli/internal"
 	"github.com/daytona/clients/cli/mcp/tools"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
+
+const intentDescription = "What problem you are trying to solve and the context of the task. Always provide this so operators and other agents can understand your actions."
+
+const missingIntentWarning = "WARNING: no 'intent' provided. Include an 'intent' argument describing the problem you are solving and the context of your task on every tool call."
 
 type DaytonaMCPServer struct {
 	server.MCPServer
@@ -24,6 +31,7 @@ func NewDaytonaMCPServer() *DaytonaMCPServer {
 		server.WithResourceCapabilities(false, false),
 		server.WithToolCapabilities(true),
 		server.WithLogging(),
+		server.WithToolHandlerMiddleware(intentWarningMiddleware),
 	)
 
 	s.addTools()
@@ -33,6 +41,32 @@ func NewDaytonaMCPServer() *DaytonaMCPServer {
 
 func (s *DaytonaMCPServer) Start() error {
 	return server.ServeStdio(&s.MCPServer)
+}
+
+// AddTool shadows the embedded MCPServer.AddTool to add the shared 'intent'
+// parameter to every tool's input schema
+func (s *DaytonaMCPServer) AddTool(tool mcp.Tool, handler server.ToolHandlerFunc) {
+	if tool.InputSchema.Properties == nil {
+		tool.InputSchema.Properties = map[string]any{}
+	}
+	tool.InputSchema.Properties["intent"] = map[string]any{
+		"type":        "string",
+		"description": intentDescription,
+	}
+	s.MCPServer.AddTool(tool, handler)
+}
+
+// intentWarningMiddleware forwards the call's 'intent' to API request telemetry
+// and appends a warning to results of calls made without one
+func intentWarningMiddleware(next server.ToolHandlerFunc) server.ToolHandlerFunc {
+	return func(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		internal.Intent = request.GetString("intent", "")
+		result, err := next(ctx, request)
+		if result != nil && internal.Intent == "" {
+			result.Content = append(result.Content, mcp.NewTextContent(missingIntentWarning))
+		}
+		return result, err
+	}
 }
 
 func (s *DaytonaMCPServer) addTools() {

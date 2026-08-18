@@ -147,6 +147,10 @@ func GetApiClient(profile *config.Profile, defaultHeaders map[string]string) (*a
 
 	clientConfig.AddDefaultHeader(DaytonaSourceHeader, "cli")
 
+	if internal.Intent != "" {
+		clientConfig.AddDefaultHeader(internal.IntentHeader, internal.Intent)
+	}
+
 	for headerKey, headerValue := range defaultHeaders {
 		clientConfig.AddDefaultHeader(headerKey, headerValue)
 	}

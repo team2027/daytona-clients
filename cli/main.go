@@ -62,7 +62,13 @@ func init() {
 
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 	rootCmd.PersistentFlags().BoolP("help", "", false, "help for daytona")
+	rootCmd.PersistentFlags().StringVar(&internal.Intent, "intent", "", internal.IntentFlagDescription)
 	rootCmd.Flags().BoolP("version", "v", false, "Display the version of Daytona")
+
+	cobra.EnableTraverseRunHooks = true
+	rootCmd.PersistentPreRun = func(command *cobra.Command, args []string) {
+		internal.WarnIfMissingIntent(command)
+	}
 
 	rootCmd.PreRun = func(command *cobra.Command, args []string) {
 		versionFlag, _ := command.Flags().GetBool("version")
