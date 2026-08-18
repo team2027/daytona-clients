@@ -10,6 +10,7 @@ import (
 
 	"github.com/daytona/clients/cli/cmd"
 	"github.com/daytona/clients/cli/cmd/auth"
+	"github.com/daytona/clients/cli/cmd/common"
 	"github.com/daytona/clients/cli/cmd/mcp"
 	"github.com/daytona/clients/cli/cmd/organization"
 	"github.com/daytona/clients/cli/cmd/sandbox"
@@ -62,7 +63,13 @@ func init() {
 
 	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 	rootCmd.PersistentFlags().BoolP("help", "", false, "help for daytona")
+	rootCmd.PersistentFlags().StringVar(&common.IntentFlag, "intent", "", common.IntentFlagDescription)
 	rootCmd.Flags().BoolP("version", "v", false, "Display the version of Daytona")
+
+	cobra.EnableTraverseRunHooks = true
+	rootCmd.PersistentPreRun = func(command *cobra.Command, args []string) {
+		common.WarnIfMissingIntent(command)
+	}
 
 	rootCmd.PreRun = func(command *cobra.Command, args []string) {
 		versionFlag, _ := command.Flags().GetBool("version")
